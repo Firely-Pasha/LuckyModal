@@ -1,11 +1,5 @@
 import SwiftUI
 
-enum LuckyModalType {
-    case bottom
-    case left
-    case center
-}
-
 public class LuckyModalManager: ObservableObject {
     
     @Published fileprivate var isModalVisible = false
@@ -112,7 +106,7 @@ private struct LuckyModalModifier: ViewModifier {
 }
 
 public extension View {
-    func luckyModal() -> some View {
+    public func luckyModal() -> some View {
         return self
             .modifier(LuckyModalModifier())
     }

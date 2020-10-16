@@ -6,21 +6,27 @@ enum LuckyModalType {
     case center
 }
 
-class LuckyModalManager: ObservableObject {
+public class LuckyModalManager: ObservableObject {
     
-    @Published var isModalVisible = false
-    @Published var alignment = Alignment.bottom
-    @Published var edge = Edge.bottom
+    @Published fileprivate var isModalVisible = false
+    @Published fileprivate var alignment = Alignment.bottom
+    @Published fileprivate var edge = Edge.bottom
+    @Published fileprivate var backgroundColor = Color.black.opacity(0.4)
     @Published fileprivate var content: (() -> AnyView)? = nil
     
-    func showModal<T: View>(alignment: Alignment = .bottom, edge: Edge = .bottom, @ViewBuilder content: @escaping () -> T) {
+    public func showModal<T: View>(
+        alignment: Alignment = .bottom,
+        edge: Edge = .bottom,
+        backgroundColor: Color = Color.black.opacity(0.4),
+        @ViewBuilder content: @escaping () -> T
+    ) {
         self.edge = edge
         self.alignment = alignment
         self.content = { AnyView(content()) }
         self.isModalVisible = true
     }
     
-    func closeModal() {
+    public func closeModal() {
         self.isModalVisible = false
     }
 }
@@ -35,7 +41,7 @@ private struct LuckyModal: View {
     var body: some View {
         ZStack(alignment: luckyModal.alignment) {
             if luckyModal.isModalVisible {
-                Color.black.opacity(0.5)
+                luckyModal.backgroundColor
                     .transition(
                         AnyTransition.opacity.animation(
                             .easeInOut(duration: backgroundAnimationDuration)
@@ -62,7 +68,6 @@ private struct LuckyModal: View {
                             .zIndex(1)
                     } else {
                         content()
-                            .modifier(LuckyModalCenterModifier())
                             .animation(
                                 .linear(duration: Double(contentAnimationDuration))
                             )
@@ -106,7 +111,7 @@ private struct LuckyModalModifier: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func luckyModal() -> some View {
         return self
             .modifier(LuckyModalModifier())
